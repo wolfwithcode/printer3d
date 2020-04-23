@@ -2,23 +2,31 @@ const express = require('express');
 const router = express.Router();
 const { Product } = require("../models/Product");
 const multer = require('multer');
-
+const cloudinary = require('cloudinary');
+require('dotenv').config();
 const { auth } = require("../middleware/auth");
 
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
 var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/')
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}_${file.originalname}`)
-    },
-    fileFilter: (req, file, cb) => {
-        const ext = path.extname(file.originalname)
-        if (ext !== '.jpg' || ext !== '.png') {
-            return cb(res.status(400).end('only jpg, png are allowed'), false);
-        }
-        cb(null, true)
-    }
+    // destination: (req, file, cb) => {
+    //     cb(null, 'uploads/')
+    // },
+    // filename: (req, file, cb) => {
+    //     cb(null, `${Date.now()}_${file.originalname}`)
+    // },
+    // fileFilter: (req, file, cb) => {
+    //     const ext = path.extname(file.originalname)
+    //     if (ext !== '.jpg' || ext !== '.png') {
+    //         return cb(res.status(400).end('only jpg, png are allowed'), false);
+    //     }
+    //     cb(null, true)
+    // }
 })
 
 var upload = multer({ storage: storage }).single("file")
@@ -28,15 +36,18 @@ var upload = multer({ storage: storage }).single("file")
 //             Product
 //=================================
 
-router.post("/uploadImage", auth, (req, res) => {
-
-    upload(req, res, err => {
-        if (err) {
-            return res.json({ success: false, err })
-        }
-        return res.json({ success: true, image: res.req.file.path, fileName: res.req.file.filename })
-    })
-
+router.post("/uploadImage", auth, upload, (req, res, next) => {
+    if(req.file){
+        cloudinary.v2.uploader.upload(req.file.path)
+        .then((result) => {
+            return res.json({success: true, image: result.secure_url, filename: result.public_id});
+        })
+        .catch((err) => {
+            return res.json({success: false, err})
+        }) 
+    } else {
+            next();
+    }        
 });
 
 
