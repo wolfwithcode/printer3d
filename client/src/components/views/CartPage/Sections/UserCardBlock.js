@@ -19,7 +19,7 @@ function UserCardBlock(props) {
                     src={renderCartImage(product.images)} />
                 </td> 
                 <td>{product.quantity} EA</td>
-                <td>$ {product.price} </td>
+                <td> {product.price} VND</td>
                 <td><button 
                 onClick={()=> props.removeItem(product._id)}
                 >Remove </button> </td>

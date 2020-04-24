@@ -17,13 +17,12 @@ const { TextArea } = Input;
 // ]
 
 function UploadProductPage(props) {
-    console.log(props.location.state.product)
-    const [TitleValue, setTitleValue] = useState(props.location.state.product.title ? props.location.state.product.title : "")
-    const [DescriptionValue, setDescriptionValue] = useState(props.location.state.product.description ? props.location.state.product.description : "")
-    const [PriceValue, setPriceValue] = useState(props.location.state.product.price ? props.location.state.product.price : 0)
+    const [TitleValue, setTitleValue] = useState(props.location.state ? props.location.state.product.title : "")
+    const [DescriptionValue, setDescriptionValue] = useState(props.location.state ? props.location.state.product.description : "")
+    const [PriceValue, setPriceValue] = useState(props.location.state ? props.location.state.product.price : 0)
     // const [ContinentValue, setContinentValue] = useState(1)
 
-    const [Images, setImages] = useState(props.location.state.product.images ? props.location.state.product.images : [])
+    const [Images, setImages] = useState(props.location.state ? props.location.state.product.images : [])
 
 
     const onTitleChange = (event) => {
@@ -82,17 +81,15 @@ function UploadProductPage(props) {
             // continents: ContinentValue,
         } 
 
-        const update_variables = {
-            writer: props.user.userData._id,
-            title: TitleValue,
-            description: DescriptionValue,
-            price: PriceValue,
-            images: Images,
-            _id: props.location.state.product._id
-        }
-
-        {props.location.state.product ? 
-            Axios.post('/api/product/updateProduct', update_variables)
+        {props.location.state ? 
+            Axios.post('/api/product/updateProduct', {
+                writer: props.user.userData._id,
+                title: TitleValue,
+                description: DescriptionValue,
+                price: PriceValue,
+                images: Images,
+                _id: props.location.state.product._id
+            })
             .then(response => {
                 if (response.data.success) {
                     alert('Product Successfully Updated')
@@ -123,7 +120,7 @@ function UploadProductPage(props) {
     return (
         <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                {props.location.state.product ? 
+                {props.location.state ? 
                     <Title level={2}>Điều Chỉnh Sản Phẩm</Title>                
                 :
                     <Title level={2}>Tạo Sản Phẩm Mới</Title> 
@@ -174,7 +171,7 @@ function UploadProductPage(props) {
                         HOÀN THÀNH
                     </Button>
                     
-                    {props.location.state.product ?
+                    {props.location.state ?
                         <Button
                             onClick={deleteProduct}
                         >

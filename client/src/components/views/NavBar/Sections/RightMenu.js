@@ -44,7 +44,7 @@ function RightMenu(props) {
 
         {user.userData.isAdmin ? 
           <Menu.Item key="upload">
-            <a href="/product/upload">Tải sản phẩm</a>
+            <a href="/product/upload">Tạo sản phẩm</a>
         </Menu.Item>
           : ''
         }
