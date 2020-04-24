@@ -26,11 +26,11 @@ router.get("/auth", auth, (req, res) => {
     });
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
 
     const user = new User(req.body);
 
-    user.save((err, doc) => {
+    await user.save((err, doc) => {
         if (err) return res.json({ success: false, err });
         return res.status(200).json({
             success: true
@@ -38,8 +38,8 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/login", (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
+router.post("/login", async (req, res) => {
+    await User.findOne({ email: req.body.email }, (err, user) => {
         if (!user)
             return res.json({
                 loginSuccess: false,
@@ -64,8 +64,8 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.get("/logout", auth, (req, res) => {
-    User.findOneAndUpdate({ _id: req.user._id }, { token: "", tokenExp: "" }, (err, doc) => {
+router.get("/logout", auth, async (req, res) => {
+    await User.findOneAndUpdate({ _id: req.user._id }, { token: "", tokenExp: "" }, (err, doc) => {
         if (err) return res.json({ success: false, err });
         return res.status(200).send({
             success: true

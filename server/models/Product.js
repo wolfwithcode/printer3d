@@ -21,10 +21,10 @@ const productSchema = mongoose.Schema({
         type: Array,
         default: []
     },
-    continents: {
-        type: Number,
-        default: 1
-    },
+    // continents: {
+    //     type: Number,
+    //     default: 1
+    // },
     sold: {
         type: Number,
         maxlength: 100,

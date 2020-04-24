@@ -16,17 +16,21 @@ function RightMenu(props) {
       } else {
         alert('Log Out Failed')
       }
+    })
+    .catch((err) => {
+      console.error(err);
     });
   };
-
-  if (user.userData && !user.userData.isAuth) {
+  
+  // if (user.userData && !user.userData.isAuth) {
+  if (!user.userData || !user.userData.isAuth) {
     return (
       <Menu mode={props.mode}>
         <Menu.Item key="mail">
-          <a href="/login">Signin</a>
+          <a href="/login">Đăng nhập</a>
         </Menu.Item>
         <Menu.Item key="app">
-          <a href="/register">Signup</a>
+          <a href="/register">Đăng ký</a>
         </Menu.Item>
       </Menu>
     )
@@ -35,12 +39,22 @@ function RightMenu(props) {
       <Menu mode={props.mode}>
 
         <Menu.Item key="history">
-          <a href="/history">History</a>
+          <a href="/history">Lịch sử mua hàng</a>
         </Menu.Item>
 
-        <Menu.Item key="upload">
-          <a href="/product/upload">Upload</a>
+        {user.userData.isAdmin ? 
+          <Menu.Item key="upload">
+            <a href="/product/upload">Tải sản phẩm</a>
         </Menu.Item>
+          : ''
+        }
+        {user.userData.isAdmin ? 
+          <Menu.Item key="edit_remove">
+            <a href="/edit_remove">Xóa/Chỉnh sửa</a>
+          </Menu.Item>
+          : ''
+        }
+        
 
         <Menu.Item key="cart" style={{ paddingBottom: 3 }}>
           <Badge count={user.userData && user.userData.cart.length}>
@@ -52,7 +66,7 @@ function RightMenu(props) {
 
 
         <Menu.Item key="logout">
-          <a onClick={logoutHandler}>Logout</a>
+          <a onClick={logoutHandler}>Đăng xuất</a>
         </Menu.Item>
       </Menu>
     )

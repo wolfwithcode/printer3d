@@ -79,6 +79,9 @@ function RegisterPage(props) {
               alert(response.payload.err.errmsg)
             }
           })
+          .catch((err) => {
+            console.error(err);
+        })
 
           setSubmitting(false);
         }, 500);

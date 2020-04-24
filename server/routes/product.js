@@ -51,18 +51,45 @@ router.post("/uploadImage", auth, upload, (req, res, next) => {
 });
 
 
-router.post("/uploadProduct", auth, (req, res) => {
+router.post("/updateProduct", auth, async (req, res) => {
+
+
+    //update the data we got from the client into the DB 
+    const product = req.body;
+    await Product.findOneAndUpdate({_id: product._id}, 
+        {$set: {images: product.images, title: product.title, description: product.description, price: product.price}}, 
+        {new: true})
+        .then(data => {
+            if(data===null){
+                throw new Error('Product not found');
+            }
+            return res.status(200).json({ success: true });
+        })
+        .catch((err) => {
+            return res.status(400).json({ success: false, err })
+        })
+
+});
+
+router.post("/uploadProduct", auth, async (req, res) => {
 
     //save all the data we got from the client into the DB 
     const product = new Product(req.body)
 
-    product.save((err) => {
+    await product.save((err) => {
         if (err) return res.status(400).json({ success: false, err })
         return res.status(200).json({ success: true })
     })
 
 });
 
+router.post("/deleteProduct", auth, async (req,res) => {
+    const product = req.body
+    await Product.findByIdAndRemove(product._id, (err) => {
+        if (err) return res.status(400).json({ success: false, err })
+        return res.status(200).json({ success: true })
+    })    
+});
 
 router.post("/getProducts", (req, res) => {
 
@@ -122,7 +149,7 @@ router.get("/products_by_id", (req, res) => {
     let type = req.query.type
     let productIds = req.query.id
 
-    console.log("req.query.id", req.query.id)
+    // console.log("req.query.id", req.query.id)
 
     if (type === "array") {
         let ids = req.query.id.split(',');
@@ -132,7 +159,7 @@ router.get("/products_by_id", (req, res) => {
         })
     }
 
-    console.log("productIds", productIds)
+    // console.log("productIds", productIds)
 
 
     //we need to find the product information that belong to product Id 

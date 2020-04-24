@@ -3,10 +3,11 @@ import Axios from 'axios';
 import { Icon, Col, Card, Row } from 'antd';
 import ImageSlider from '../../utils/ImageSlider';
 import SearchFeature from '../LandingPage/Sections/SearchFeature';
+import {Link} from 'react-router-dom';
 
 const { Meta } = Card;
 
-function LandingPage() {
+function EditRemoveProductPage() {
 
     const [Products, setProducts] = useState([])
     const [Skip, setSkip] = useState(0)
@@ -60,18 +61,24 @@ function LandingPage() {
 
 
     const renderCards = Products.map((product, index) => {
-
-        return <Col lg={6} md={8} xs={24}>
-            <Card
-                hoverable={true}
-                cover={<a href={`/product/${product._id}`} > <ImageSlider images={product.images} /></a>}
-            >
-                <Meta
-                    title={product.title}
-                    description={`$${product.price}`}
-                />
-            </Card>
-        </Col>
+        return (
+            <Link to={{pathname: '/product/upload',
+                        state: {
+                            product: product
+                        }}}>
+                <Col lg={6} md={8} xs={24}>
+                    <Card
+                        hoverable={true}
+                        cover={<a href={`/product/${product._id}`} > <ImageSlider images={product.images} /></a>}
+                    >
+                        <Meta
+                            title={product.title}
+                            description={`$${product.price}`}
+                        />
+                    </Card>
+                </Col>            
+            </Link>
+        ) 
     })
 
 
@@ -93,7 +100,7 @@ function LandingPage() {
     return (
         <div style={{ width: '75%', margin: '3rem auto' }}>
             <div style={{ textAlign: 'center' }}>
-                <h2>  Máy in 3D  <Icon type="rocket" />  </h2>
+                <h2>  Xóa - Chỉnh sửa  <Icon type="rocket" />  </h2>
             </div>
 
 
@@ -134,4 +141,5 @@ function LandingPage() {
     )
 }
 
-export default LandingPage
+
+export default EditRemoveProductPage

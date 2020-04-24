@@ -21,6 +21,7 @@ function CartPage(props) {
         if (props.user.userData && props.user.userData.cart) {
             if (props.user.userData.cart.length > 0) {
                 props.user.userData.cart.forEach(item => {
+                    console.log(item)
                     cartItems.push(item.id)
                 });
                 dispatch(getCartItems(cartItems, props.user.userData.cart))
@@ -28,6 +29,9 @@ function CartPage(props) {
                         if (response.payload.length > 0) {
                             calculateTotal(response.payload)
                         }
+                    })
+                    .catch((err) => {
+                        console.error(err);
                     })
             }
         }
@@ -56,6 +60,9 @@ function CartPage(props) {
                     calculateTotal(response.payload.cartDetail)
                 }
             })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 
     const transactionSuccess = (data) => {
@@ -68,6 +75,9 @@ function CartPage(props) {
                     setShowSuccess(true)
                     setShowTotal(false)
                 }
+            })
+            .catch((err) => {
+                console.error(err);
             })
     }
 

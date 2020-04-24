@@ -26,6 +26,9 @@ export default function (ComposedClass, reload, adminRoute = null) {
                     }
                 }
             })
+            .catch((err) => {
+                console.error(err);
+            })
             
         }, [dispatch, props.history, user.googleAuth])
 

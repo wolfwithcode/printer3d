@@ -25,6 +25,9 @@ function FileUpload(props) {
                     alert('Failed to save the Image in Server')
                 }
             })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 
 

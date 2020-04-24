@@ -13,7 +13,10 @@ import { USER_SERVER } from '../components/Config.js';
 
 export function registerUser(dataToSubmit) {
     const request = axios.post(`${USER_SERVER}/register`, dataToSubmit)
-        .then(response => response.data);
+        .then(response => response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: REGISTER_USER,
@@ -23,7 +26,10 @@ export function registerUser(dataToSubmit) {
 
 export function loginUser(dataToSubmit) {
     const request = axios.post(`${USER_SERVER}/login`, dataToSubmit)
-        .then(response => response.data);
+        .then(async response => await response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: LOGIN_USER,
@@ -33,7 +39,10 @@ export function loginUser(dataToSubmit) {
 
 export function auth() {
     const request = axios.get(`${USER_SERVER}/auth`)
-        .then(response => response.data);
+        .then(async response => await response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: AUTH_USER,
@@ -43,7 +52,10 @@ export function auth() {
 
 export function logoutUser() {
     const request = axios.get(`${USER_SERVER}/logout`)
-        .then(response => response.data);
+        .then(async response => await response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: LOGOUT_USER,
@@ -54,7 +66,10 @@ export function logoutUser() {
 
 export function addToCart(_id) {
     const request = axios.get(`${USER_SERVER}/addToCart?productId=${_id}`)
-        .then(response => response.data);
+        .then(response => response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: ADD_TO_CART_USER,
@@ -81,6 +96,9 @@ export function getCartItems(cartItems, userCart) {
             })
 
             return response.data;
+        })
+        .catch((err) => {
+            console.error(err);
         });
 
     return {
@@ -104,6 +122,9 @@ export function removeCartItem(id) {
                 })
             })
             return response.data;
+        })
+        .catch((err) => {
+            console.error(err);
         });
 
     return {
@@ -116,7 +137,10 @@ export function removeCartItem(id) {
 export function onSuccessBuy(data) {
 
     const request = axios.post(`${USER_SERVER}/successBuy`, data)
-        .then(response => response.data);
+        .then(response => response.data)
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {
         type: ON_SUCCESS_BUY_USER,
