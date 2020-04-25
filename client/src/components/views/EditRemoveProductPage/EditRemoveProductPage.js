@@ -69,7 +69,7 @@ function EditRemoveProductPage() {
                 <Col lg={6} md={8} xs={24}>
                     <Card
                         hoverable={true}
-                        cover={<a href={`/product/${product._id}`} > <ImageSlider images={product.images} /></a>}
+                        cover={<ImageSlider images={product.images} />}
                     >
                         <Meta
                             title={product.title}
@@ -89,7 +89,6 @@ function EditRemoveProductPage() {
             limit: Limit,
             searchTerm: newSearchTerm
         }
-
         setSkip(0)
         setSearchTerms(newSearchTerm)
 

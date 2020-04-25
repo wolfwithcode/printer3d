@@ -3,8 +3,7 @@ import Dropzone from 'react-dropzone';
 import { Icon } from 'antd';
 import Axios from 'axios';
 function FileUpload(props) {
-
-    const [Images, setImages] = useState([])
+    const [Images, setImages] = useState(props.images);
 
     const onDrop = (files) => {
 
@@ -15,8 +14,8 @@ function FileUpload(props) {
         formData.append("file", files[0])
         //save the Image we chose inside the Node Server 
         Axios.post('/api/product/uploadImage', formData, config)
-            .then(response => {
-                if (response.data.success) {
+            .then(async response => {
+                if (await response.data.success) {
 
                     setImages([...Images, response.data.image])
                     props.refreshFunction([...Images, response.data.image])
@@ -34,11 +33,24 @@ function FileUpload(props) {
     const onDelete = (image) => {
         const currentIndex = Images.indexOf(image);
 
+        console.log(image)
         let newImages = [...Images]
         newImages.splice(currentIndex, 1)
 
-        setImages(newImages)
-        props.refreshFunction(newImages)
+        //delete the Image we chose inside the Node Server 
+        const config = {headers: {'content-type': 'application/json'}};
+        Axios.post('/api/product/deleteImage', {"file": image}, config)
+            .then(async response => {
+                if (await response.data.success) {
+                    setImages(newImages)
+                    props.refreshFunction(newImages)
+                } else {
+                    alert('Failed to delete the Image in cloud')
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 
     return (

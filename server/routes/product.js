@@ -5,6 +5,7 @@ const multer = require('multer');
 const cloudinary = require('cloudinary');
 require('dotenv').config();
 const { auth } = require("../middleware/auth");
+const path = require('path');
 
 
 cloudinary.config({
@@ -50,12 +51,32 @@ router.post("/uploadImage", auth, upload, (req, res, next) => {
     }        
 });
 
+router.post('/deleteImage', auth, async (req,res,next) => {
+    //delete image from cloudinary
+    var image = req.body.file;
+    if(image) {
+        var extension = path.extname(image);
+        filename = path.basename(image,extension);
+        await cloudinary.v2.uploader.destroy(filename)
+        .then((result) => {
+            return res.json({success: true});
+        })
+        .catch((err) => {
+            return res.json({success: false, err})
+        }) 
+    } else {
+        next();
+    }        
+});
+
 
 router.post("/updateProduct", auth, async (req, res) => {
 
 
     //update the data we got from the client into the DB 
     const product = req.body;
+
+    //Update database
     await Product.findOneAndUpdate({_id: product._id}, 
         {$set: {images: product.images, title: product.title, description: product.description, price: product.price}}, 
         {new: true})
@@ -84,15 +105,25 @@ router.post("/uploadProduct", auth, async (req, res) => {
 });
 
 router.post("/deleteProduct", auth, async (req,res) => {
-    const product = req.body
+    const product = req.body;
+
+    //Delete in cloudinary
+    var filename, extension = '';
+    await product.images.map((image) => {
+        extension = path.extname(image);
+        filename = path.basename(image,extension);
+        cloudinary.v2.uploader.destroy(filename, function(error) {
+            console.log(error) });
+    });
+
+    //Delete in databases
     await Product.findByIdAndRemove(product._id, (err) => {
-        if (err) return res.status(400).json({ success: false, err })
-        return res.status(200).json({ success: true })
+        if (err) return res.status(400).json({ success: false, err });
+        return res.status(200).json({ success: true });
     })    
 });
 
-router.post("/getProducts", (req, res) => {
-
+router.post("/getProducts", async (req, res) => {
     let order = req.body.order ? req.body.order : "desc";
     let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
     let limit = req.body.limit ? parseInt(req.body.limit) : 100;
@@ -118,7 +149,7 @@ router.post("/getProducts", (req, res) => {
     console.log(findArgs)
 
     if (term) {
-        Product.find(findArgs)
+        await Product.find(findArgs)
             .find({ $text: { $search: term } })
             .populate("writer")
             .sort([[sortBy, order]])
@@ -129,7 +160,7 @@ router.post("/getProducts", (req, res) => {
                 res.status(200).json({ success: true, products, postSize: products.length })
             })
     } else {
-        Product.find(findArgs)
+        await Product.find(findArgs)
             .populate("writer")
             .sort([[sortBy, order]])
             .skip(skip)
@@ -145,7 +176,7 @@ router.post("/getProducts", (req, res) => {
 
 //?id=${productId}&type=single
 //id=12121212,121212,1212121   type=array 
-router.get("/products_by_id", (req, res) => {
+router.get("/products_by_id", async (req, res) => {
     let type = req.query.type
     let productIds = req.query.id
 
@@ -163,7 +194,7 @@ router.get("/products_by_id", (req, res) => {
 
 
     //we need to find the product information that belong to product Id 
-    Product.find({ '_id': { $in: productIds } })
+    await Product.find({ '_id': { $in: productIds } })
         .populate('writer')
         .exec((err, product) => {
             if (err) return res.status(400).send(err)

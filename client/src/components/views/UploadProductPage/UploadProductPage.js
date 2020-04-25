@@ -131,7 +131,9 @@ function UploadProductPage(props) {
             <Form onSubmit={onSubmit} >
 
                 {/* DropZone */}
-                <FileUpload refreshFunction={updateImages} />
+                <FileUpload refreshFunction={updateImages} 
+                                images={props.location.state ? props.location.state.product.images : [] } />
+               
 
                 <br />
                 <br />

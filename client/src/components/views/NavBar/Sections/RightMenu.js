@@ -3,7 +3,7 @@ import React from 'react';
 import { Menu, Icon, Badge } from 'antd';
 import axios from 'axios';
 import { USER_SERVER } from '../../../Config';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 function RightMenu(props) {
@@ -27,10 +27,10 @@ function RightMenu(props) {
     return (
       <Menu mode={props.mode}>
         <Menu.Item key="mail">
-          <a href="/login">Đăng nhập</a>
+          <Link to="/login">Đăng nhập</Link>
         </Menu.Item>
         <Menu.Item key="app">
-          <a href="/register">Đăng ký</a>
+          <Link to="/register">Đăng ký</Link>
         </Menu.Item>
       </Menu>
     )
@@ -39,18 +39,18 @@ function RightMenu(props) {
       <Menu mode={props.mode}>
 
         <Menu.Item key="history">
-          <a href="/history">Lịch sử mua hàng</a>
+          <Link to="/history">Lịch sử mua hàng</Link>
         </Menu.Item>
 
         {user.userData.isAdmin ? 
           <Menu.Item key="upload">
-            <a href="/product/upload">Tạo sản phẩm</a>
+            <Link to="/product/upload">Tạo sản phẩm</Link>
         </Menu.Item>
           : ''
         }
         {user.userData.isAdmin ? 
           <Menu.Item key="edit_remove">
-            <a href="/edit_remove">Xóa/Chỉnh sửa</a>
+            <Link to="/edit_remove">Xóa/Chỉnh sửa</Link>
           </Menu.Item>
           : ''
         }
@@ -58,9 +58,9 @@ function RightMenu(props) {
 
         <Menu.Item key="cart" style={{ paddingBottom: 3 }}>
           <Badge count={user.userData && user.userData.cart.length}>
-            <a href="/user/cart" style={{ marginRight: -22 , color:'#667777'}}>
+            <Link to="/user/cart" style={{ marginRight: -22 , color:'#667777'}}>
               <Icon type="shopping-cart" style={{ fontSize: 30, marginBottom: 3 }} />
-            </a>
+            </Link>
           </Badge>
         </Menu.Item>
 
